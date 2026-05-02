@@ -22,6 +22,60 @@ def generate_resistor(count):
     ]
 
 
-df_jlcpcb = pd.DataFrame(generate_resistor(20))
-# df_jlcpcb.to_excel('template.xlsx', index=False)
+def generate_capacitor(count):
+    values = ['1u', '10p', '100p', '220n', '100n', '10n', '2200n']
+    footprint = ['0603', '0805']
+
+    designators = generate_designator('C', count)
+
+    return [
+        {
+            'Comment': np.random.choice(values),
+            'Designators': i,
+            'Footprint': np.random.choice(footprint)
+        }
+        for i in designators
+    ]
+
+
+def generate_inductor(count):
+    values = ['1u', '10p', '100p', '220n', '100n', '10n', '2200n']
+    footprint = ['0603', '0805']
+
+    designators = generate_designator('L', count)
+
+    return [
+        {
+            'Comment': np.random.choice(values),
+            'Designators': i,
+            'Footprint': np.random.choice(footprint)
+        }
+        for i in designators
+    ]
+
+
+def generate_power_source(count):
+    values = ['12V', '5V', '-12V', '-5V', '6V', '9V']
+    footprint = ['0603', '0805']
+
+    designators = generate_designator('PS', count)
+
+    return [
+        {
+            'Comment': np.random.choice(values),
+            'Designators': i,
+            'Footprint': np.random.choice(footprint)
+        }
+        for i in designators
+    ]
+
+
+df_jlcpcb = pd.DataFrame()
+df_jlcpcb = pd.concat([
+    df_jlcpcb,
+    pd.DataFrame(generate_resistor(30)),
+    pd.DataFrame(generate_capacitor(30)),
+    pd.DataFrame(generate_inductor(5)),
+    pd.DataFrame(generate_power_source(3))
+], ignore_index=True)
 print(df_jlcpcb)
