@@ -39,7 +39,7 @@ def generate_capacitor(count):
 
 
 def generate_inductor(count):
-    values = ['1u', '10p', '100p', '220n', '100n', '10n', '2200n']
+    values = ['1uH', '10uH', '100uH']
     footprint = ['0603', '0805']
 
     designators = generate_designator('L', count)
@@ -70,6 +70,16 @@ def generate_power_source(count):
     ]
 
 
+def join_components(df):
+
+    df_grouped = df.groupby(['Comment', 'Footprint']).agg({
+        'topDesignator': lambda x: ', '.join(x.dropna()),
+        'bottomDesignator': lambda x: ', '.join(x.dropna())
+    })
+
+    return df_grouped
+
+
 df_jlcpcb = pd.DataFrame()
 df_jlcpcb = pd.concat([
     df_jlcpcb,
@@ -78,4 +88,5 @@ df_jlcpcb = pd.concat([
     pd.DataFrame(generate_inductor(5)),
     pd.DataFrame(generate_power_source(3))
 ], ignore_index=True)
+
 print(df_jlcpcb)
