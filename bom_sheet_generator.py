@@ -12,14 +12,32 @@ def generate_resistor(count):
 
     designators = generate_designator('R', count)
 
-    return [
-        {
+    topCount = np.random.randint(0, count+1)
+
+    shuffled_designators = np.random.permutation(designators)
+
+    top_list = shuffled_designators[:topCount]
+    bottom_list = shuffled_designators[topCount:]
+
+    component_list = []
+
+    for i in top_list:
+        component_list.append({
             'Comment': np.random.choice(values),
-            'Designators': i,
+            'topDesignator': i,
+            'bottomDesignator': None,
             'Footprint': np.random.choice(footprint)
-        }
-        for i in designators
-    ]
+        })
+
+    for i in bottom_list:
+        component_list.append({
+            'Comment': np.random.choice(values),
+            'topDesignator': None,
+            'bottomDesignator': i,
+            'Footprint': np.random.choice(footprint)
+        })
+
+    return component_list
 
 
 def generate_capacitor(count):
@@ -73,20 +91,20 @@ def generate_power_source(count):
 def join_components(df):
 
     df_grouped = df.groupby(['Comment', 'Footprint']).agg({
-        'topDesignator': lambda x: ', '.join(x.dropna()),
-        'bottomDesignator': lambda x: ', '.join(x.dropna())
+        'topDesignator': lambda x: ', '.join(sorted(x.dropna(), key=lambda d: int(d[1:]))),
+        'bottomDesignator': lambda x: ', '.join(sorted(x.dropna(), key=lambda d: int(d[1:])))
     })
 
-    return df_grouped
+    return df_grouped.reset_index()
 
 
 df_jlcpcb = pd.DataFrame()
 df_jlcpcb = pd.concat([
     df_jlcpcb,
     pd.DataFrame(generate_resistor(30)),
-    pd.DataFrame(generate_capacitor(30)),
-    pd.DataFrame(generate_inductor(5)),
-    pd.DataFrame(generate_power_source(3))
+    # pd.DataFrame(generate_capacitor(30)),
+    # pd.DataFrame(generate_inductor(5)),
+    # pd.DataFrame(generate_power_source(3))
 ], ignore_index=True)
 
-print(df_jlcpcb)
+print(join_components(df_jlcpcb))
