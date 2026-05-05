@@ -71,8 +71,19 @@ def join_components_altium(df):
     return df_grouped.reset_index()
 
 
-df_altium = make_altium_bom(df_base)
-df_jlcpcb = make_jlcpcb_bom(df_base)
+df_altium_base = make_altium_bom(df_base)
+df_jlcpcb_base = make_jlcpcb_bom(df_base)
 
-print(join_components_altium(df_altium))
-print(join_components_jlcpcb(df_jlcpcb))
+df_altium = join_components_altium(df_altium_base)
+df_jlcpcb = join_components_jlcpcb(df_jlcpcb_base)
+
+print(df_altium)
+print(df_jlcpcb)
+
+df_altium.to_excel(
+    'data/altium_bom.xlsx', index=True, startrow=np.random.randint(3, 12)
+)
+
+df_jlcpcb.to_excel(
+    'data/jlcpcb_bom.xlsx', index=False
+)
