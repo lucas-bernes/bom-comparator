@@ -14,16 +14,26 @@ def find_header_row_altium(df):
             return index
 
     return None
-    # procurar linha onde aparece Comment, Footprint, Designator
 
 
 def read_altium_bom(file_path):
-    df = pd.read_excel(file_path)
+
+    # 1. Read the file skipping the first index column from Excel
+    df = pd.read_excel(file_path).iloc[:, 1:]
+
+    # 2. Find the row where the actual header is located
     head_index = find_header_row_altium(df)
-    print(df)
+
+    # 3. Slice the dataframe to remove everything above the header
+    df = df.iloc[head_index:].reset_index(drop=True)
+
+    # 4. Set the first row as the column names
+    df.columns = df.iloc[0]
+
+    # 5. Remove the row used as header and reset the index
+    df = df.iloc[1:].reset_index(drop=True)
+
     return df
-    # usar find_header_row_altium
-    # retornar df normalizado com Comment, Footprint, Designator
 
 
 def read_jlcpcb_bom(file_path):
