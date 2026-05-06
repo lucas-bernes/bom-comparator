@@ -86,8 +86,6 @@ drop_component(df_jlcpcb_base)
 df_altium = join_components_altium(df_altium_base)
 df_jlcpcb = join_components_jlcpcb(df_jlcpcb_base)
 
-print(len(df_altium))
-print(len(df_jlcpcb))
 
 df_altium.to_excel(
     'data/altium_bom.xlsx', index=True, startrow=np.random.randint(3, 12)
