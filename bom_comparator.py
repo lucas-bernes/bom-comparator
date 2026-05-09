@@ -10,7 +10,7 @@ def find_header_row_altium(df):
 
     for index, row in df.iterrows():
         if 'Designator' in row.astype(str).values:
-            print(f' BOM Header Index: {index} \n')
+            print(f'Altium BOM Header Index: {index} \n')
             return index
 
     return None
@@ -33,20 +33,35 @@ def read_altium_bom(file_path):
     # 5. Remove the row used as header and reset the index
     df = df.iloc[1:].reset_index(drop=True)
 
+    df = split_designators(df)
     return df
 
 
 def read_jlcpcb_bom(file_path):
+
     df = pd.read_excel(file_path)
+
+    df['Designator'] = (
+        df['topDesignator'].fillna('') +
+        ', ' +
+        df['bottomDesignator'].fillna('')
+    )
+
+    # limpar vírgulas sobrando
+    df['Designator'] = (
+        df['Designator']
+        .str.strip(', ')
+        .str.replace(r',\s*,', ',', regex=True)
+    )
+    df = df.drop(columns=['topDesignator', 'bottomDesignator'],)
+
+    df = split_designators(df)
     return df
-    # ler direto
-    # juntar topDesignator e bottomDesignator em uma coluna Designator
-    # retornar df normalizado
 
 
 def split_designators(df):
-    # transformar "R1, R2, R3" em linhas separadas
-    pass
+    df['Designator'] = df['Designator'].apply(lambda x: x.split(', '))
+    return df.explode('Designator').reset_index(drop=True)
 
 
 def compare_boms(df_altium, df_jlcpcb):
