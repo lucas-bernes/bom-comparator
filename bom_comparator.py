@@ -84,9 +84,15 @@ def compare_boms(df_altium, df_jlcpcb):
     return missing_components.drop(columns=['_merge']).reset_index(drop=True)
 
 
-def export_results(df_result):
+def export_results(df_result, file_name='missing_components.xlsx'):
+
     OUTPUT_DIR.mkdir(exist_ok=True)
-    df_result.to_excel(OUTPUT_DIR / 'missing_components.xlsx', index=False)
+
+    output_path = OUTPUT_DIR / file_name
+
+    df_result.to_excel(output_path, index=False)
+
+    print(f'Results exported to: {output_path}')
 
 
 def main():
@@ -98,7 +104,7 @@ def main():
 
     df_result = compare_boms(df_altium, df_jlcpcb)
 
-    # export_results(df_result)
+    export_results(df_result)
 
 
 if __name__ == '__main__':
