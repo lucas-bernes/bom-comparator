@@ -6,6 +6,11 @@ DATA_DIR = Path('data')
 OUTPUT_DIR = Path('outputs')
 
 
+def normalize_footprint(df):
+    df['Footprint'] = df['Footprint'].astype(str).str.zfill(4)
+    return df
+
+
 def find_header_row_altium(df):
 
     for index, row in df.iterrows():
@@ -40,14 +45,14 @@ def read_altium_bom(file_path):
 def read_jlcpcb_bom(file_path):
 
     df = pd.read_excel(file_path)
-
+    print(df)
     df['Designator'] = (
         df['topDesignator'].fillna('') +
         ', ' +
         df['bottomDesignator'].fillna('')
     )
 
-    # limpar vírgulas sobrando
+    # clear remaining commas
     df['Designator'] = (
         df['Designator']
         .str.strip(', ')
@@ -65,9 +70,10 @@ def split_designators(df):
 
 
 def compare_boms(df_altium, df_jlcpcb):
-    # comparar designators
-    # gerar faltantes no JLCPCB e faltantes no Altium
-    pass
+    # print(df_altium)
+    # print(df_jlcpcb)
+
+    return df_altium
 
 
 def export_results(df_result):
@@ -82,7 +88,7 @@ def main():
     df_altium = read_altium_bom(altium_path)
     df_jlcpcb = read_jlcpcb_bom(jlcpcb_path)
 
-    # df_result = compare_boms(df_altium, df_jlcpcb)
+    df_result = compare_boms(df_altium, df_jlcpcb)
 
     # export_results(df_result)
 
