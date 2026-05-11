@@ -39,13 +39,13 @@ def read_altium_bom(file_path):
     df = df.iloc[1:].reset_index(drop=True)
 
     df = split_designators(df)
+    df = normalize_footprint(df)
     return df
 
 
 def read_jlcpcb_bom(file_path):
 
     df = pd.read_excel(file_path)
-    print(df)
     df['Designator'] = (
         df['topDesignator'].fillna('') +
         ', ' +
@@ -61,6 +61,7 @@ def read_jlcpcb_bom(file_path):
     df = df.drop(columns=['topDesignator', 'bottomDesignator'],)
 
     df = split_designators(df)
+    df = normalize_footprint(df)
     return df
 
 
@@ -70,10 +71,17 @@ def split_designators(df):
 
 
 def compare_boms(df_altium, df_jlcpcb):
-    # print(df_altium)
-    # print(df_jlcpcb)
 
-    return df_altium
+    df_compare = df_altium.merge(
+        df_jlcpcb,
+        on=['Comment', 'Footprint', 'Designator'],
+        how='left',
+        indicator=True
+    )
+
+    missing_components = df_compare[df_compare['_merge'] == 'left_only']
+
+    return missing_components.drop(columns=['_merge']).reset_index(drop=True)
 
 
 def export_results(df_result):
