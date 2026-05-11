@@ -1,9 +1,36 @@
 from pathlib import Path
 import pandas as pd
-
+import argparse
 
 DATA_DIR = Path('data')
 OUTPUT_DIR = Path('outputs')
+
+
+def parse_args():
+
+    parser = argparse.ArgumentParser(
+        description='Compare Altium and JLCPCB BOM files.'
+    )
+
+    parser.add_argument(
+        '--altium',
+        required=True,
+        help='Path to the Altium BOM Excel file.'
+    )
+
+    parser.add_argument(
+        '--jlcpcb',
+        required=True,
+        help='Path to the JLCPCB BOM Excel file.'
+    )
+
+    parser.add_argument(
+        '--output',
+        default='missing_components.xlsx',
+        help='Output Excel file name.'
+    )
+
+    return parser.parse_args()
 
 
 def normalize_footprint(df):
@@ -96,15 +123,18 @@ def export_results(df_result, file_name='missing_components.xlsx'):
 
 
 def main():
-    altium_path = DATA_DIR / 'altium_bom.xlsx'
-    jlcpcb_path = DATA_DIR / 'jlcpcb_bom.xlsx'
+
+    args = parse_args()
+
+    altium_path = Path(args.altium)
+    jlcpcb_path = Path(args.jlcpcb)
 
     df_altium = read_altium_bom(altium_path)
     df_jlcpcb = read_jlcpcb_bom(jlcpcb_path)
 
     df_result = compare_boms(df_altium, df_jlcpcb)
-
-    export_results(df_result)
+    print(df_result)
+    export_results(df_result, args.output)
 
 
 if __name__ == '__main__':
