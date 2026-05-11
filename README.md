@@ -1,8 +1,22 @@
-from pathlib import Path
+# Altium vs JLCPCB BOM Comparator
 
-readme_text = '''# BOM Comparator
+Python tool for comparing Altium Designer BOM exports against JLCPCB assembly BOM files in order to detect components missing from PCB assembly.
 
-Tool for comparing Altium and JLCPCB BOM files to identify components missing from PCB assembly.
+This project simulates a real-world electronics manufacturing workflow by parsing, normalizing, and validating Bill of Materials (BOM) files generated from different PCB design and assembly environments.
+
+---
+
+## Why This Project?
+
+When designing PCBs in Altium Designer and ordering SMT assembly through JLCPCB, BOM inconsistencies may occur due to:
+
+- Missing components
+- Incorrect assembly exports
+- Split top/bottom designators
+- Different spreadsheet formats
+- Grouped designator representations
+
+This tool automates BOM validation and helps identify assembly discrepancies before PCB manufacturing.
 
 ---
 
@@ -15,8 +29,8 @@ Tool for comparing Altium and JLCPCB BOM files to identify components missing fr
 - Automatic BOM parsing and normalization
 - Split grouped designators into individual components
 - Compare Altium and JLCPCB BOMs
-- Detect missing components from assembly BOMs
-- Export comparison results to Excel
+- Detect missing assembly components
+- Export comparison reports to Excel
 - Command-line interface (CLI) support
 
 ---
@@ -74,11 +88,19 @@ python bom_sheet_generator.py
 
 Run BOM comparison:
 
-
-
 ```bash
 python bom_comparator.py --altium data/altium_bom.xlsx --jlcpcb data/jlcpcb_bom.xlsx --output outputs/missing_components.xlsx
 ```
+
+---
+
+## Example Workflow
+
+1. Generate synthetic Altium and JLCPCB BOM files
+2. Parse and normalize both spreadsheets
+3. Split grouped designators into individual components
+4. Compare assembly BOM against design BOM
+5. Export missing components to an Excel report
 
 ---
 
@@ -118,8 +140,3 @@ python bom_comparator.py --altium data/altium_bom.xlsx --jlcpcb data/jlcpcb_bom.
 ## Author
 
 Lucas Bernes
-'''
-
-Path("README.md").write_text(readme_text, encoding="utf-8")
-
-print("README.md updated successfully.")
