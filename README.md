@@ -1,6 +1,8 @@
-# BOM Comparator
+from pathlib import Path
 
-Tool for comparing Altium and JLCPCB BOM files to identify components missing from assembly.
+readme_text = '''# BOM Comparator
+
+Tool for comparing Altium and JLCPCB BOM files to identify components missing from PCB assembly.
 
 ---
 
@@ -10,8 +12,12 @@ Tool for comparing Altium and JLCPCB BOM files to identify components missing fr
 - Generate synthetic JLCPCB BOMs
 - Randomized component generation
 - Randomized Altium header position
-- Split top/bottom designators
-- Detect missing components between BOMs
+- Automatic BOM parsing and normalization
+- Split grouped designators into individual components
+- Compare Altium and JLCPCB BOMs
+- Detect missing components from assembly BOMs
+- Export comparison results to Excel
+- Command-line interface (CLI) support
 
 ---
 
@@ -25,9 +31,11 @@ BOM Comparator/
 │   └── jlcpcb_bom.xlsx
 │
 ├── outputs/
+│   └── missing_components.xlsx
 │
 ├── bom_sheet_generator.py
 ├── bom_comparator.py
+├── requirements.txt
 ├── README.md
 └── .gitignore
 ```
@@ -40,6 +48,12 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
+```
+
+Enter the project folder:
+
+```bash
+cd "BOM Comparator"
 ```
 
 Install dependencies:
@@ -60,8 +74,10 @@ python bom_sheet_generator.py
 
 Run BOM comparison:
 
+
+
 ```bash
-python bom_comparator.py
+python bom_comparator.py --altium data/altium_bom.xlsx --jlcpcb data/jlcpcb_bom.xlsx --output outputs/missing_components.xlsx
 ```
 
 ---
@@ -72,6 +88,7 @@ python bom_comparator.py
 - Pandas
 - NumPy
 - OpenPyXL
+- argparse
 
 ---
 
@@ -79,22 +96,30 @@ python bom_comparator.py
 
 - Simulate realistic Altium BOM exports
 - Simulate JLCPCB assembly BOMs
-- Compare both files automatically
+- Automatically compare both BOM files
 - Export missing component reports
+- Improve robustness of BOM parsing
 
 ---
 
 ## Future Improvements
 
-- GUI interface
+- Graphical user interface (GUI)
 - Better Excel formatting
 - Component quantity validation
 - Unit tests
 - CSV support
 - Real-world BOM support
+- Extra component detection
+- Footprint/value mismatch detection
 
 ---
 
 ## Author
 
 Lucas Bernes
+'''
+
+Path("README.md").write_text(readme_text, encoding="utf-8")
+
+print("README.md updated successfully.")
